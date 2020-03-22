@@ -60,7 +60,7 @@ describe('AuthServiceA', () => {
 
       const result = await authService.login(user);
 
-      expect(result).toEqual(token);
+      expect(result).toEqual({ token });
 
       signSpy.mockRestore();
       findByLoginSpy.mockRestore();

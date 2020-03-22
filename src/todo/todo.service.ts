@@ -32,7 +32,7 @@ export class TodoService {
   }
 
   async findById(id, owner: UserObject): Promise<TodoEntity> {
-    const todo = this.todoRepository.findOne({ id, owner });
+    const todo = await this.todoRepository.findOne({ id, owner });
     if (!todo) {
       throw new NotFoundException('Todo not found');
     }
@@ -55,9 +55,9 @@ export class TodoService {
     return this.findById(id, owner);
   }
 
-  async delete(id, owner: UserObject) {
+  async delete(id, owner: UserObject): Promise<{ affected: number }> {
     const { affected } = await this.todoRepository.delete({ id, owner });
 
-    return affected;
+    return { affected };
   }
 }

@@ -105,7 +105,9 @@ describe('TodoService', () => {
     });
 
     it('should should throw exception if no todo not found', async () => {
-      const findSpy = jest.spyOn(todoRepo, 'findOne').mockReturnValue(null);
+      const findSpy = jest
+        .spyOn(todoRepo, 'findOne')
+        .mockReturnValue(Promise.resolve(null));
 
       const result = todoService.findById(todo.id, owner);
 
@@ -158,7 +160,7 @@ describe('TodoService', () => {
 
       const result = await todoService.delete(todo.id, owner);
 
-      expect(result).toEqual(deleteResult.affected);
+      expect(result).toEqual({ affected: deleteResult.affected });
 
       deleteSpy.mockRestore();
     });

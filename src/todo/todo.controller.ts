@@ -20,13 +20,13 @@ export class TodoController {
 
   @Post()
   @UseGuards(AuthGuard())
-  async create(@Body() todoCreateDto: TodoCreateDto, @User() user: UserObject) {
+  create(@Body() todoCreateDto: TodoCreateDto, @User() user: UserObject) {
     return this.todoService.create(todoCreateDto, user);
   }
 
   @Get()
   @UseGuards(AuthGuard())
-  async findAll(@User() user: UserObject) {
+  findAll(@User() user: UserObject) {
     return this.todoService.findAll(user);
   }
 
