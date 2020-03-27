@@ -11,10 +11,10 @@
     "baseUrl": "./",
     "incremental": true,
     "paths": {
-      "@user/*": ["src/user/*"],
-      "@auth/*": ["src/auth/*"],
-      "@shared/*": ["src/shared/*"],
-      "@todo/*": ["src/todo/*"]
+      "@user/*": ["boilerplate/src/user/*"],
+      "@auth/*": ["boilerplate/src/auth/*"],
+      "@shared/*": ["boilerplate/src/shared/*"],
+      "@todo/*": ["boilerplate/src/todo/*"]
     }
   },
   "exclude": ["node_modules", "dist"]

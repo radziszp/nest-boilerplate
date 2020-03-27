@@ -26,6 +26,7 @@ jobs:
         postgresql user: todo
         postgresql password: todo
     - run: npm ci
+    - run: npm run bootstrap
     - run: npm run build --if-present
     - run: npm test
     - run: npm run test:e2e

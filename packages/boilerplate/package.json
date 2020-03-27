@@ -1,0 +1,36 @@
+{
+  "name": "@stormpage/boilerplate",
+  "version": "0.0.1",
+  "description": "sample module",
+  "author": "Patryk Radziszewski <patryk@radziszewski.it>",
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "nest build",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "start:dev": "nodemon",
+    "start": "nodemon",
+    "start:prod": "node -r dotenv-safe/config dist/main",
+    "lint": "eslint '{src,apps,libs,test}/**/*.ts' --fix",
+    "test": "jest --config ../jest.config.js",
+    "test:e2e": "jest --config ../jest-e2e.config.js --runInBand --detectOpenHandles"
+  },
+  "dependencies": {
+    "pg": "^7.18.1",
+    "rimraf": "^3.0.1",
+    "rxjs": "^6.5.4",
+    "typeorm": "^0.2.22",
+    "@nestjs/typeorm": "^6.2.0",
+    "bcrypt": "^4.0.0",
+    "dotenv": "^8.2.0",
+    "helmet": "^3.21.3",
+    "nodemon": "^2.0.2",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "@nestjs/jwt": "^6.1.2",
+    "@nestjs/passport": "^6.2.0"
+  },
+  "devDependencies": {
+    "@types/passport-jwt": "^3.0.3"
+  }
+}
