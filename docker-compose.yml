@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: todo
+      POSTGRES_PASSWORD: todo
+      POSTGRES_DATABASE: todo
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    networks:
+      - backend
+  boilerplate:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        SERVICE: boilerplate
+    environment:
+      DATABASES_POSTGRES_HOST: postgres
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    volumes:
+      - ./packages/boilerplate:/opt/app/packages/boilerplate
+      - main-modules:/opt/app/node_modules
+      - boilerplate-modules:/opt/app/packages/boilerplate/node_modules
+    networks:
+      - backend
+
+volumes:
+  postgres:
+  boilerplate-modules:
+  main-modules:
+
+networks:
+  backend:
