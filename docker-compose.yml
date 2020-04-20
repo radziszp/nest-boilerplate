@@ -26,33 +26,71 @@ services:
       - postgres:/data/postgres
     networks:
       - backend
-  boilerplate:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    networks:
+      - backend
+  kafka:
+    image: wurstmeister/kafka
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: "kafka"
+      KAFKA_CREATE_TOPICS: "notifier"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    networks:
+      - backend
+    depends_on:
+      - zookeeper
+  todo:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
       args:
-        SERVICE: boilerplate
+        SERVICE: todo
     labels:
       - traefik.enable=true
-      - traefik.http.routers.boilerplate.rule=Host(`boilerplate.localhost`)
-      - traefik.http.routers.boilerplate.entrypoints=web
-      - traefik.http.services.boilerplate.loadbalancer.server.port=3000
+      - traefik.http.routers.todo.rule=Host(`todo.localhost`)
+      - traefik.http.routers.todo.entrypoints=web
+      - traefik.http.services.todo.loadbalancer.server.port=3000
     environment:
-      DATABASES_POSTGRES_HOST: postgres
+      TODO_DATABASES_POSTGRES_HOST: postgres
+      TODO_KAFKA_HOST: kafka
     depends_on:
       - postgres
       - traefik
     volumes:
-      - ./packages/boilerplate:/opt/app/packages/boilerplate
+      - ./packages/todo:/opt/app/packages/todo
       - main-modules:/opt/app/node_modules
-      - boilerplate-modules:/opt/app/packages/boilerplate/node_modules
+      - todo-modules:/opt/app/packages/todo/node_modules
+    networks:
+      - backend
+  notifier:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        SERVICE: notifier
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.notifier.rule=Host(`notifier.localhost`)
+      - traefik.http.routers.notifier.entrypoints=web
+      - traefik.http.services.notifier.loadbalancer.server.port=3001
+    environment:
+      NOTIFIER_KAFKA_HOST: kafka
+    depends_on:
+      - kafka
+      - traefik
+    volumes:
+      - ./packages/notifier:/opt/app/packages/notifier
+      - main-modules:/opt/app/node_modules
+      - notifier-modules:/opt/app/packages/notifier/node_modules
     networks:
       - backend
 
 volumes:
   postgres:
-  boilerplate-modules:
   main-modules:
+  todo-modules:
+  notifier-modules:
 
 networks:
   backend:

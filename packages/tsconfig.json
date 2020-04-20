@@ -10,11 +10,13 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
+    "skipLibCheck": true,
     "paths": {
-      "@user/*": ["boilerplate/src/user/*"],
-      "@auth/*": ["boilerplate/src/auth/*"],
-      "@shared/*": ["boilerplate/src/shared/*"],
-      "@todo/*": ["boilerplate/src/todo/*"]
+      "@user/*": ["todo/src/user/*"],
+      "@auth/*": ["todo/src/auth/*"],
+      "@shared/*": ["todo/src/shared/*"],
+      "@todo/*": ["todo/src/todo/*"],
+      "@kafka/*": ["todo/src/kafka/*"]
     }
   },
   "exclude": ["node_modules", "dist"]

@@ -1,7 +1,7 @@
 {
-  "name": "@stormpage/boilerplate",
+  "name": "@stormpage/todo",
   "version": "0.0.1",
-  "description": "sample module",
+  "description": "Base application",
   "author": "Patryk Radziszewski <patryk@radziszewski.it>",
   "license": "MIT",
   "scripts": {
