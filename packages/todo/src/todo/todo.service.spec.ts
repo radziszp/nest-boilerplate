@@ -7,10 +7,15 @@ import { UserObject } from '@user/interfaces';
 import { UserEntity } from '@user/entities/user.entity';
 import { UserService } from '@user/user.service';
 import { NotFoundException } from '@nestjs/common';
+import { NotifyEvent } from '@todo/events/notify.event';
+import { KafkaService } from '@kafka/kafka.service';
+import { NOTIFY_TYPES } from '@shared/constants';
 
 describe('TodoService', () => {
   let todoService: TodoService;
   let userService: UserService;
+  let notifyEvent: NotifyEvent;
+  let kafkaService: KafkaService;
   let todoRepo: Repository<TodoEntity>;
   const todo = { id: '1', name: 'name' } as TodoEntity;
   const owner = { id: '1' } as UserObject;
@@ -35,11 +40,20 @@ describe('TodoService', () => {
           provide: getRepositoryToken(UserEntity),
           useClass: Repository,
         },
+        NotifyEvent,
+        {
+          provide: KafkaService,
+          useFactory: () => ({
+            emit: () => jest.fn(),
+          }),
+        }
       ],
     }).compile();
 
     userService = module.get(UserService);
     todoService = module.get(TodoService);
+    notifyEvent = module.get(NotifyEvent);
+    kafkaService = module.get(KafkaService);
     todoRepo = module.get(getRepositoryToken(TodoEntity));
   });
 
@@ -58,6 +72,24 @@ describe('TodoService', () => {
       findOneSpy.mockRestore();
       createSpy.mockRestore();
       saveSpy.mockRestore();
+    });
+
+    it('should call afterCreate method', async () => {
+      const findOneSpy = jest
+        .spyOn(userService, 'findOne')
+        .mockReturnValue(Promise.resolve(owner));
+      const saveSpy = jest
+        .spyOn(todoRepo, 'save')
+        .mockReturnValue(Promise.resolve(todo));
+      const afterCreateSpy = jest.spyOn(todoService, 'afterCreate');
+
+      await todoService.create(todo, owner);
+
+      expect(afterCreateSpy).toBeCalledWith(owner, todo);
+
+      findOneSpy.mockRestore();
+      saveSpy.mockRestore();
+      afterCreateSpy.mockRestore();
     });
 
     it('should return saved todo', async () => {
@@ -163,6 +195,22 @@ describe('TodoService', () => {
       expect(result).toEqual({ affected: deleteResult.affected });
 
       deleteSpy.mockRestore();
+    });
+  });
+
+  describe('afterCreate()', () => {
+    it('should execute notifyEvent', () => {
+      const data = {
+        subject: "You've created new todo",
+        message: `Congratulations you've created new todo ${todo.name}`,
+      };
+      const executeSpy = jest.spyOn(notifyEvent, 'execute');
+
+      todoService.afterCreate(owner, todo);
+
+      expect(executeSpy).toBeCalledWith(NOTIFY_TYPES.EMAIl, owner, data);
+
+      executeSpy.mockRestore();
     });
   });
 });

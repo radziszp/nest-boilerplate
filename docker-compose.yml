@@ -52,7 +52,8 @@ services:
       - traefik.http.routers.todo.entrypoints=web
       - traefik.http.services.todo.loadbalancer.server.port=3000
     environment:
-      DATABASES_POSTGRES_HOST: postgres
+      TODO_DATABASES_POSTGRES_HOST: postgres
+      TODO_KAFKA_HOST: kafka
     depends_on:
       - postgres
       - traefik
