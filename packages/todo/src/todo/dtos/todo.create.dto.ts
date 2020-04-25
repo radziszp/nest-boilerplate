@@ -1,7 +1,9 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { IsUnique } from '@shared/validators';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class TodoCreateDto {
+  @ApiPropertyOptional({ description: 'Todo\'s name' })
   @IsNotEmpty()
   @IsString()
   @IsUnique(
@@ -10,6 +12,7 @@ export class TodoCreateDto {
   )
   name: string;
 
+  @ApiPropertyOptional({ description: 'Todo\'s description' })
   @IsOptional()
   @IsString()
   description?: string;
