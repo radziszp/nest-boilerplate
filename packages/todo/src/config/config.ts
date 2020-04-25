@@ -32,5 +32,11 @@ export const configuration = {
   kafka: {
     host: process.env.TODO_KAFKA_HOST || 'localhost',
     port: parseInt(process.env.TODO_KAFKA_PORT, 10) || 9092,
-  }
+  },
+  swagger: {
+    title: 'TODO app',
+    description: 'Sample monorepo TODO APP',
+    version: '1.0',
+    tag: 'TODO',
+  },
 };
